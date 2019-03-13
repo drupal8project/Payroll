@@ -1,62 +1,29 @@
 <?php
 /**
  * @file
- * Contains \Drupal\payroll\Form\Form.
+ * Contains \Drupal\payroll\Form\SimpleForm.
  */
 namespace Drupal\payroll\Form;
 
 use Drupal\Core\Form\FormBase;
-use Drupal\Core\Session\AccountProxy;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\modules\user\Form\UserLoginForm;
+use Drupal\Core\Url;
 
 class SimpleForm extends FormBase {
 
     /**
      * {@inheritdoc}
      */
-    public function getFormId() {
-        return 'user_login_form';
-    }
-    
-    /**
-     * {@inheritdoc}
-     */
-    public function buildForm(array $form, FormStateInterface $form_state) {
-        $config = $this->config('system.site');
-        
-        $form['role'] = array (
-            '#type' => 'radios',
-            '#title' => ('Role:'),
-            '#options' => array(
-              'Admin' =>t('Admin'),
-              'Others' =>t('Others')
-            ),
-          );
+    public function submitForm(&$form, FormStateInterface $form_state) {
+        drupal_set_message('Logged in Succesfully!');
+
+        // Set relative path
+        $response = "\somepath";
+        $Url = url::frommUserInput($response);
+
+        //set Redirect
+        $form_state->setRedirectUrl($Url);
 
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function submitForm(array &$form, FormStateInterface $form_state) {
-
-        $account = $this->userStorage->load($form_state->get('uid'));
-
-        // A destination was set, probably on an exception controller,
-        if (!$this->getRequest()->request->has('destination')) {
-          $form_state->setRedirect(
-            'entity.user.canonical',
-            ['user' => $account->id()]
-          );
-        }
-        else {
-          $this->getRequest()->query->set('destination', $this->getRequest()->request->get('destination'));
-        }
     
-        user_login_finalize($account);
-      }
-    
-    }
-
 }
