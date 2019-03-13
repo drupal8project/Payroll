@@ -11,10 +11,16 @@ use Drupal\Core\Url;
 
 class SimpleForm extends FormBase {
 
+    // Implements HOOK_FORM_ID_alter
+    public function payroll_form_alter(&$form, FormStateInterface $form_state) {
+    $form['actions']['submit']['#submit'][]  = 'payroll_form_submit';
+    }   
+
+
     /**
      * {@inheritdoc}
      */
-    public function submitForm(&$form, FormStateInterface $form_state) {
+    public function payroll_form_submit(&$form, FormStateInterface $form_state) {
         drupal_set_message('Logged in Succesfully!');
 
         // Set relative path
